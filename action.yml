@@ -79,8 +79,8 @@ runs:
         git fetch
         git checkout "$TO_BRANCH" || exit 1
         git pull || exit 1
-        echo "git cherry-pick $COMMIT_ID"
-        CHERRY_PICK_RESULT="$(git cherry-pick $COMMIT_ID || true)"
+        echo "git cherry-pick -m 1 $COMMIT_ID"
+        CHERRY_PICK_RESULT="$(git cherry-pick -m 1 $COMMIT_ID || true)"
 
         (grep -q "nothing to commit" <<< "$CHERRY_PICK_RESULT") && EMPTY_CHERRY_PICK=true
         echo "EMPTY_CHERRY_PICK=$EMPTY_CHERRY_PICK" >> $GITHUB_ENV
