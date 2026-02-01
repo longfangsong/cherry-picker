@@ -14,6 +14,9 @@ inputs:
   pr_number:
     description: "PR number to cherry-pick"
     required: true
+  auto_approve:
+    description: "Auto approve the created cherry-pick"
+    required: false
 
 runs:
   using: composite
@@ -128,7 +131,7 @@ runs:
       run: gh pr merge --auto --squash "${{ steps.create-pr.outputs.pull-request-number }}"
 
     - name: Approve pull request
-      if: ${{ env.EMPTY_CHERRY_PICK != 'true' && env.MERGE_CONFLICT != 'true' && steps.create-pr.outputs.pull-request-operation == 'created' }}
+      if: ${{ inputs.auto_approve != 'true' && env.EMPTY_CHERRY_PICK != 'true' && env.MERGE_CONFLICT != 'true' && steps.create-pr.outputs.pull-request-operation == 'created' }}
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.gh_token }}
