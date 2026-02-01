@@ -16,7 +16,8 @@ inputs:
     required: true
   auto_approve:
     description: "Auto approve the created cherry-pick"
-    required: false
+    required: true
+    default: false
 
 runs:
   using: composite
@@ -124,14 +125,14 @@ runs:
         delete-branch: true
 
     - name: Enable auto-merge on pull request
-      if: ${{ inputs.auto_approve != true && env.EMPTY_CHERRY_PICK != 'true' && env.MERGE_CONFLICT != 'true' && steps.create-pr.outputs.pull-request-operation == 'created' }}
+      if: ${{ inputs.auto_approve == true && env.EMPTY_CHERRY_PICK != 'true' && env.MERGE_CONFLICT != 'true' && steps.create-pr.outputs.pull-request-operation == 'created' }}
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: gh pr merge --auto --squash "${{ steps.create-pr.outputs.pull-request-number }}"
 
     - name: Approve pull request
-      if: ${{ inputs.auto_approve != true && env.EMPTY_CHERRY_PICK != 'true' && env.MERGE_CONFLICT != 'true' && steps.create-pr.outputs.pull-request-operation == 'created' }}
+      if: ${{ inputs.auto_approve == true && env.EMPTY_CHERRY_PICK != 'true' && env.MERGE_CONFLICT != 'true' && steps.create-pr.outputs.pull-request-operation == 'created' }}
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.gh_token }}
